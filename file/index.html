@@ -1,162 +1,152 @@
-
 <!DOCTYPE html>
-<html>
-
-
-<!-- Mirrored from driftbossonline.github.io/file/ by HTTrack Website Copier/3.x [XR&CO'2014], Tue, 02 Apr 2024 12:47:05 GMT -->
+<html lang="en-us">
+  
+<!-- Mirrored from just-fall.github.io/file/ by HTTrack Website Copier/3.x [XR&CO'2014], Sat, 06 Apr 2024 12:50:30 GMT -->
 <!-- Added by HTTrack --><meta http-equiv="content-type" content="text/html;charset=utf-8" /><!-- /Added by HTTrack -->
 <head>
-	<title>Drift Boss</title>
-	<meta name="description" content="Drift Boss is a one-button endless drifting game where you must steer your vehicle across a platform with tricky bends and bumps whilst avoiding falling off the edge.">
-	<link rel="icon" type="image/x-icon" href="../media/graphics/misc/favicon.html" />
-	<meta http-equiv="Content-type" content="text/html; charset=utf-8">
-	<!-- Use this metatag when Apple fixes their IOS 9
-	<meta name="viewport" content="width=device-width,height=device-height, initial-scale=1, maximum-scale=1, user-scalable=0, minimal-ui"/>
-	-->
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <title>Just Fall</title>
+    <meta name="robots" content="noindex,nofollow" />
+    <script>
+      Object.defineProperty(document, "URL", {
+        get() {
+          return "https://justfall.lol/";
+        },
+      });
+    </script>
+    <script src="https://just-fall.github.io/file/mobileRedirect.js"></script>
+    <!-- Rise SDK -->
+    <script src="https://just-fall.github.io/file/hb.loader.js"></script>
+    <link rel="shortcut icon" type="image/png" href="https://just-fall.github.io/file/favicon.png" />
 
-	<!--Temporary fix for IOS 9-->
-	<meta name="viewport" content="initial-scale=1.0001, minimum-scale=1.0001, maximum-scale=1.0001, user-scalable=no, minimal-ui" />
+    <link rel="stylesheet" href="https://just-fall.github.io/file/style.css" />
+    <!-- ZONETAG - PLACE INTO HEAD SECTION OR RUN CODE AT STARTUP -->
+    <script>
+      (function (zonefile) {
+        var y = "cpmstarx";
+        var drutObj = (window[y] = window[y] || {});
+        function failCpmstarAPI() {
+          var failFn = function (o) {
+            o && typeof o === "object" && o.fail && o.fail();
+          };
+          drutObj && Array.isArray(drutObj.cmd) && drutObj.cmd.forEach(failFn) && (drutObj.cmd.length = 0);
+          window.cpmstarAPI = window["_" + zonefile] = failFn;
+        }
+        var rnd = Math.round(Math.random() * 999999);
+        var s = document.createElement("script");
+        s.type = "text/javascript";
+        s.async = true;
+        s.onerror = failCpmstarAPI;
+        var proto = document.location.protocol;
+        var host = proto == "https:" || proto == "file:" ? "https://server" : "//cdn";
+        if (window.location.hash == "#cpmstarDev") host = "//dev.server";
+        if (window.location.hash == "#cpmstarStaging") host = "//staging.server";
+        s.src = host + ".cpmstar.com/cached/zonefiles/" + zonefile + ".js?rnd=" + rnd;
+        var s2 = document.getElementsByTagName("script")[0];
+        s2.parentNode.insertBefore(s, s2);
+        window.cpmstarAPI = function (o) {
+          (drutObj.cmd = drutObj.cmd || []).push(o);
+        };
+      })("627_49986_gameapi");
+    </script>
+    <!-- MIDROLL/INTERSTITIAL VIDEO API -->
+    <script src="https://just-fall.github.io/file/rise.js"></script>
+  </head>
+  <body>
+    <div id="gameContainer"></div>
+    <div id="loader">
+      <div class="spinner"></div>
+      <div class="progress">
+        <div class="full"></div>
+      </div>
+    </div>
+    <script src="https://just-fall.github.io/file/fullscreen.js"></script>
+    <script id="unity-loader" src="https://just-fall.github.io/file/UnityLoader.js"></script>
+    <script>
+      var gameJsonUrl = "https://just-fall.github.io/file/WebGL.json"; //%gameJsonUrl
+      var urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.has("v")) {
+        gameJsonUrl = gameJsonUrl.replace(/[0-9][0-9]+/i, urlParams.get("v"));
+      }
+      var gameInstance = UnityLoader.instantiate("gameContainer", gameJsonUrl, { onProgress: UnityProgress });
 
-	<meta name="apple-mobile-web-app-capable" content="yes" />
+      function UnityProgress(gameInstance, progress) {
+        if (!gameInstance.Module) {
+          return;
+        }
+        const loader = document.querySelector("#loader");
+        if (!gameInstance.progress) {
+          const progress = document.querySelector("#loader .progress");
+          progress.style.display = "block";
+          gameInstance.progress = progress.querySelector(".full");
+          loader.querySelector(".spinner").style.display = "none";
+        }
+        gameInstance.progress.style.transform = `scaleX(${progress})`;
+        if (progress === 1 && !gameInstance.removeTimeout) {
+          loader.style.display = "none";
+          gameLoaded = true;
+        }
+      }
 
-	<link rel="stylesheet" type="text/css" href="game.css">
+      initializeFullscreenEvents();
 
-	<script type="text/javascript" src="game.js"></script>
-	<!-- AnalyticsCode -->
-	<script type="text/javascript" src="../cloak.html"></script>
-  	<meta name="robots" content="noindex,nofollow" />
-	<!-- APICode -->
-</head>
+      injectAdByWindowSize();
 
-<body onload="setTimeout(function(){window.scrollTo(0,1)},1);">
-	<!--body-->
+      document.addEventListener("visibilitychange", function () {
+        if (!gameInstance) return;
 
-	<div id="ajaxbar">
-		<div id="game"><canvas id="canvas"></canvas></div>
-		<div id="webgl"><canvas id="webglcanvas"></canvas></div>
+        if (document.visibilityState == "hidden") {
+          gameInstance.SendMessage("FocusManager", "ApplicationFocusChangedWebCallback", 0);
+        } else {
+          gameInstance.SendMessage("FocusManager", "ApplicationFocusChangedWebCallback", 1);
+        }
+      });
 
-		<div id="orientate"><img src="https://driftbossonline.github.io/file/media/graphics/orientate/landscape.jpg" /></div>
-		<div id="play" class="play" onclick=""><img src="https://driftbossonline.github.io/file/media/graphics/splash/mobile/cover-start.jpg" /></div>
-		<!--<img id="scrollDown" width="220" height="277"></img>-->
+      window.addEventListener("resize", injectAdByWindowSize);
 
-		<!-- SECTION GENERATED BY CODE -->
-		<div id="MobileAdInGamePreroll">
-			<div id="MobileAdInGamePreroll-Box">
-				<div id="MobileAdInGamePreroll-Box-Header"></div>
-				<a id="MobileAdInGamePreroll-Box-Close" onclick="MobileAdInGamePreroll.Close();"></a>
-				<div id="MobileAdInGamePreroll-Box-Body">
-					<center>
-						<!-- MobileAdInGamePreroll -->
-						<!-- AdTest-MobileAdInGamePreroll -->
-						<img src="https://cdn-factory.marketjs.com/generic.png">
-						<!-- EndOfAdTest-MobileAdInGamePreroll -->
-					</center>
-				</div>
-				<div id='MobileAdInGamePreroll-Box-Footer'></div>
-			</div>
-		</div>
+      function injectAdByWindowSize() {
+        // Inject small ad if screen is small, or large ad if screen is large
+      }
 
-		<!-- SECOND AD (ROTATION) -->
-		<div id="MobileAdInGamePreroll2">
-			<div id="MobileAdInGamePreroll2-Box">
-				<div id="MobileAdInGamePreroll2-Box-Header"></div>
-				<a id="MobileAdInGamePreroll2-Box-Close" onclick="MobileAdInGamePreroll.Close();"></a>
-				<div id="MobileAdInGamePreroll2-Box-Body">
-					<center>
-						<!-- MobileAdInGamePreroll2 -->
-					</center>
-				</div>
-				<div id='MobileAdInGamePreroll2-Box-Footer'></div>
-			</div>
-		</div>
+      function showAds() {
+        console.log("show ads");
 
-		<!-- THIRD AD (ROTATION) -->
-		<div id="MobileAdInGamePreroll3">
-			<div id="MobileAdInGamePreroll3-Box">
-				<div id="MobileAdInGamePreroll3-Box-Header"></div>
-				<a id="MobileAdInGamePreroll3-Box-Close" onclick="MobileAdInGamePreroll.Close();"></a>
-				<div id="MobileAdInGamePreroll3-Box-Body">
-					<center>
-						<!-- MobileAdInGamePreroll3 -->
-					</center>
-				</div>
-				<div id='MobileAdInGamePreroll3-Box-Footer'></div>
-			</div>
-		</div>
+        document.getElementsByClassName("ad-rectangle-bottom")[0].style.display = "block";
+        document.getElementsByClassName("ad-leaderboard-bottom")[0].style.display = "block";
+        document.getElementById("adRectangleUpper").style.display = "block";
 
-		<div id="MobileAdInGameHeader">
-			<!-- MobileAdInGameHeader -->
-		</div>
-		<div id="MobileAdInGameHeader2">
-			<!-- MobileAdInGameHeader2 -->
-		</div>
-		<div id="MobileAdInGameHeader3">
-			<!-- MobileAdInGameHeader3 -->
-		</div>
+        refresh();
+      }
 
-		<div id="MobileAdInGameFooter">
-			<!-- MobileAdInGameFooter -->
-		</div>
-		<div id="MobileAdInGameFooter2">
-			<!-- MobileAdInGameFooter2 -->
-		</div>
-		<div id="MobileAdInGameFooter3">
-			<!-- MobileAdInGameFooter3 -->
-		</div>
+      function hideAds() {
+        console.log("hide ads");
 
+        document.getElementsByClassName("ad-rectangle-bottom")[0].style.display = "none";
+        document.getElementsByClassName("ad-leaderboard-bottom")[0].style.display = "none";
+        document.getElementById("adRectangleUpper").style.display = "none";
+      }
 
-		<div id="MobileAdInGameEnd">
-			<div id="MobileAdInGameEnd-Box">
-				<div id="MobileAdInGameEnd-Box-Header"></div>
-				<a id="MobileAdInGameEnd-Box-Close" onclick="MobileAdInGameEnd.Close();"></a>
-				<div id="MobileAdInGameEnd-Box-Body">
-					<center>
-						<!-- MobileAdInGameEnd -->
-					</center>
-				</div>
-				<div id='MobileAdInGameEnd-Box-Footer'></div>
-			</div>
-		</div>
+      function refresh() {
+        if (document.getElementById("adRectangleBottom") != null && window.getComputedStyle(document.getElementsByClassName("ad-smallscreen")[0]).display != "none") {
+          cpmstarAPI({ kind: "adcmd", module: "POOL 84816", command: "refresh" });
+        }
 
-		<!-- SECOND AD (ROTATION) -->
-		<div id="MobileAdInGameEnd2">
-			<div id="MobileAdInGameEnd2-Box">
-				<div id="MobileAdInGameEnd2-Box-Header"></div>
-				<a id="MobileAdInGameEnd2-Box-Close" onclick="MobileAdInGameEnd.Close();"></a>
-				<div id="MobileAdInGameEnd2-Box-Body">
-					<center>
-						<!-- MobileAdInGameEnd2 -->
-					</center>
-				</div>
-				<div id='MobileAdInGameEnd2-Box-Footer'></div>
-			</div>
-		</div>
+        if (document.getElementById("adLeaderboardBottom") != null && window.getComputedStyle(document.getElementsByClassName("ad-largescreen")[0]).display != "none") {
+          cpmstarAPI({ kind: "adcmd", module: "POOL 85075", command: "refresh" });
+        }
 
-		<!-- THIRD AD (ROTATION) -->
-		<div id="MobileAdInGameEnd3">
-			<div id="MobileAdInGameEnd3-Box">
-				<div id="MobileAdInGameEnd3-Box-Header"></div>
-				<a id="MobileAdInGameEnd3-Box-Close" onclick="MobileAdInGameEnd.Close();"></a>
-				<div id="MobileAdInGameEnd3-Box-Body">
-					<center>
-						<!-- MobileAdInGameEnd3 -->
-					</center>
-				</div>
-				<div id='MobileAdInGameEnd3-Box-Footer'></div>
-			</div>
-		</div>
+        cpmstarAPI({ kind: "adcmd", module: "POOL 85074", command: "refresh" });
 
-		<!-- END OF SECTION GENERATED BY CODE -->
+        console.log("refresh ads");
+      }
 
-	</div>
-	<!-- <div id="tempdiv"><br><br><br></div> -->
-	<!-- APICode2 -->
+      window.onfocus = function () {
+        console.log("onfocus");
+        refresh();
+      };
+    </script>
+  </body>
 
-
-	<!-- END OF TEST -->
-
-</body>
-
-
-<!-- Mirrored from driftbossonline.github.io/file/ by HTTrack Website Copier/3.x [XR&CO'2014], Tue, 02 Apr 2024 12:47:08 GMT -->
+<!-- Mirrored from just-fall.github.io/file/ by HTTrack Website Copier/3.x [XR&CO'2014], Sat, 06 Apr 2024 12:50:30 GMT -->
 </html>
